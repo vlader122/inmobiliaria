@@ -1,4 +1,5 @@
 import {Router} from 'express'
+
 import pkg from "../../package.json" assert {type: "json"};
 
 const router = Router()

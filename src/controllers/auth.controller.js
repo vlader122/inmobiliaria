@@ -12,11 +12,13 @@ export const signupHandler = async (req, res) => {
       username,
       email,
       password,
+      roles
     });
 
     // checking for roles
     if (roles) {
       const foundRoles = await Role.find({ name: { $in: roles } });
+      console.log(foundRoles);
       newUser.roles = foundRoles.map((role) => role._id);
     } else {
       const role = await Role.findOne({ name: "user" });
@@ -40,15 +42,15 @@ export const signupHandler = async (req, res) => {
 export const signinHandler = async (req, res) => {
   try {
     // Request body email can be an email or username
-    const userFound = await User.findOne({ email: req.body.email }).populate(
+    const emailFound = await User.findOne({ email: req.body.email }).populate(
       "roles"
     );
 
-    if (!userFound) return res.status(400).json({ message: "User Not Found" });
+    if (!emailFound) return res.status(400).json({ message: "Email Not Found" });
 
     const matchPassword = await User.comparePassword(
       req.body.password,
-      userFound.password
+      emailFound.password
     );
 
     if (!matchPassword)
@@ -57,7 +59,7 @@ export const signinHandler = async (req, res) => {
         message: "Invalid Password",
       });
 
-    const token = jwt.sign({ id: userFound._id }, SECRET, {
+    const token = jwt.sign({ id: emailFound._id }, SECRET, {
       expiresIn: 86400, // 24 hours
     });
 

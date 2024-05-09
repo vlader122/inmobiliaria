@@ -5,10 +5,11 @@ import helmet from "helmet";
 
 // Routes
 import indexRoutes from "./routes/index.routes.js";
-import productRoutes from "./routes/products.routes.js";
 import usersRoutes from "./routes/user.routes.js";
 import authRoutes from "./routes/auth.routes.js";
-import customerRoutes from "./routes/customer.routes.js"
+import customerRoutes from "./routes/customer.routes.js";
+import propertyRoutes from "./routes/property.routes.js";
+
 
 const app = express();
 
@@ -29,8 +30,8 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.use("/api", indexRoutes);
-app.use("/api/products", productRoutes);
 app.use("/api/customers", customerRoutes);
+app.use("/api/properties", propertyRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/auth", authRoutes);
 

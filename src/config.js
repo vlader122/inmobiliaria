@@ -1,8 +1,11 @@
 import { config } from "dotenv";
 config();
 
+//using deploy db
+// export const MONGODB_URI =
+//   process.env.MONGODB_URI || "mongodb+srv://vlader122:73818972a@testin.s05r2sp.mongodb.net/?retryWrites=true&w=majority&appName=TestIn";
 export const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://localhost/apicompany";
+  process.env.MONGODB_URI || "mongodb://localhost/inmobiliaria";
 export const PORT = process.env.PORT || 4000;
 export const SECRET = "yoursecretkey";
 

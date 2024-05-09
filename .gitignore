@@ -6,3 +6,4 @@ build
 
 # environment variables
 .env
+package-lock.json
