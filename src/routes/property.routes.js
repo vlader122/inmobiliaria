@@ -5,12 +5,21 @@ import {
   updatePropertyById,
   deletePropertyById,
   getPropertyById,
+  getPropertiesByPrice,
+  getPropertyCountByCity,
+  getRecentProperties,
 } from "../controllers/property.controller.js";
 import { verifyToken, isModerator, isAdmin } from "../middlewares/authJwt.js";
 
 const router = Router();
 
 router.get("/", getPropertys);
+
+router.get("/price", getPropertiesByPrice);
+
+router.get("/count-by-city", getPropertyCountByCity);
+
+router.get("/recent", getRecentProperties);
 
 router.get("/:propertyId", getPropertyById);
 

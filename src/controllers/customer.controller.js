@@ -30,6 +30,42 @@ export const getCustomerById = async (req, res) => {
     res.status(200).json(customer);
 };
 
+export const getCustomerByName = async (req, res) => {
+    const { name } = req.query;
+    try {
+        const customers = await Customer.find({ name: { $regex: name, $options: 'i' } });
+
+        res.status(200).json(customers);
+    } catch (error) {
+        res.status(500).json({ message: "error" });
+    }
+};
+
+export const getContactInfo = async (req, res) => {
+    const { name } = req.query;
+    let filter = {};
+
+    // Verificar si se proporcionó el parámetro de consulta "name"
+    if (name) {
+        // Construir un filtro que busque en los campos de nombre y apellido
+        filter = {
+            $or: [
+                { name: { $regex: name, $options: 'i' } },
+                { lastname: { $regex: name, $options: 'i' } }
+            ]
+        };
+    }
+
+    try {
+        // Obtener la lista de contactos filtrada (si se proporcionó el parámetro de consulta "name")
+        const customers = name ? await Customer.find(filter, 'name lastname phone address') : await Customer.find({}, 'name lastname phone address');
+
+        res.status(200).json(customers);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 export const getCustomers = async (req, res) => {
     const customers = await Customer.find();
     return res.json(customers);

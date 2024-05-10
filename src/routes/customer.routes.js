@@ -5,12 +5,18 @@ import {
   updateCustomerById,
   deleteCustomerById,
   getCustomerById,
+  getCustomerByName,
+  getContactInfo,
 } from "../controllers/customer.controller.js";
 import { verifyToken, isModerator, isAdmin } from "../middlewares/authJwt.js";
 
 const router = Router();
 
 router.get("/", getCustomers);
+
+router.get("/search", getCustomerByName);
+
+router.get("/directory", getContactInfo);
 
 router.get("/:customerId", getCustomerById);
 
