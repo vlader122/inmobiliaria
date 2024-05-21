@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   signinHandler,
   signupHandler,
+  signoutHandler,
 } from "../controllers/auth.controller.js";
 import {
   checkExistingRole,
@@ -21,5 +22,7 @@ router.use((req, res, next) => {
 router.post("/signup", [checkExistingUser, checkExistingRole], signupHandler);
 
 router.post("/signin", signinHandler);
+
+router.post("/signout", signoutHandler);
 
 export default router;

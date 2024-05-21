@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Role from "../models/Role.js";
 import { SECRET } from "../config.js";
+import { invalidTokens } from '../middlewares/authJwt.js';
 
 export const signupHandler = async (req, res) => {
   try {
@@ -66,5 +67,27 @@ export const signinHandler = async (req, res) => {
     res.json({ token });
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const signoutHandler = async (req, res) => {
+  try {
+    const token = req.headers["x-access-token"];
+
+    // Verificar si no hay token en los encabezados
+    if (!token) {
+      return res.status(403).json({ message: "Token requerido" });
+    }
+
+    // Agregar el token a la lista de tokens inválidos si existe
+    if (token) {
+      invalidTokens.add(token);
+      console.log(`Token inválido añadido: ${token}`);
+    }
+
+    return res.status(200).json({ message: "Sesión cerrada con éxito." });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "No se pudo cerrar la sesión." });
   }
 };
