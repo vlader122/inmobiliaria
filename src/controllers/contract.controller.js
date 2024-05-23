@@ -92,3 +92,66 @@ export const deleteContractById = async (req, res) => {
   // code 200 is ok too
   res.status(204).json();
 };
+
+export const getActiveContractsByCustomer = async (req, res) => {
+  try {
+      const activeContracts = await Contract.find({ endDate: { $gte: new Date() } })
+          .populate('customer')
+          .populate('property');
+      const report = activeContracts.reduce((acc, contract) => {
+          const { customer, property, startDate, endDate, contractType, terms, price } = contract;
+          console.log(property);
+          if (!acc[customer._id]) {
+              acc[customer._id] = {
+                  customer: {
+                      name: customer.name,
+                      lastname: customer.lastname,
+                      email: customer.email,
+                      phone: customer.phone
+                  },
+                  contracts: []
+              };
+          }
+          acc[customer._id].contracts.push({
+              property: property.address,
+              contractType,
+              startDate,
+              endDate,
+              terms,
+              price
+          });
+          return acc;
+      }, {});
+
+      res.status(200).json(Object.values(report));
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error al generar el reporte" });
+  }
+};
+
+export const getAvailableProperties = async (req, res) => {
+  try {
+      // Obtener los contratos activos (aquellos que tienen una fecha de finalización en el futuro)
+      const activeContracts = await Contract.find({ endDate: { $gte: new Date() } });
+
+      // Extraer los IDs de las propiedades que tienen contratos activos
+      const activePropertyIds = activeContracts.map(contract => contract.property);
+
+      // Buscar las propiedades que no están en los contratos activos
+      const availableProperties = await Property.find({ _id: { $nin: activePropertyIds } });
+
+      // Preparar el reporte con la información de las propiedades disponibles
+      const report = availableProperties.map(property => ({
+          address: property.address,
+          type: property.type,
+          size: property.size,
+          price: property.price
+      }));
+
+      res.status(200).json(report);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error al generar el reporte" });
+  }
+};
